@@ -60,6 +60,8 @@ export default async function handler(req, res) {
       match_count: 5,
     });
 
+    const { data: chunkCount, error: countError } = await supabase.rpc('debug_chunk_count');
+
     const context = (matches || [])
       .map((m) => `[${m.document_name}]\n${m.chunk_text}`)
       .join('\n\n---\n\n');
@@ -74,6 +76,8 @@ export default async function handler(req, res) {
         matchCount: matches ? matches.length : null,
         embeddingLength: queryEmbedding.length,
         supabaseUrlUsed: process.env.SUPABASE_URL,
+        chunkCount,
+        countError,
       },
     });
   } catch (err) {
