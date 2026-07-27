@@ -59,15 +59,7 @@ export default async function handler(req, res) {
       query_embedding: `[${queryEmbedding.join(',')}]`,
       match_count: 5,
     });
-
-    const { data: chunkCount, error: countError } = await supabase.rpc('debug_chunk_count');
-    const { data: listedChunks, error: listError } = await supabase.rpc('debug_list_chunks');
-    const { data: paramCheck, error: paramError } = await supabase.rpc('debug_embedding_param', {
-      query_embedding: `[${queryEmbedding.join(',')}]`,
-    });
-    const { data: distanceCheck, error: distanceError } = await supabase.rpc('debug_distance_check', {
-      query_embedding: `[${queryEmbedding.join(',')}]`,
-    });
+    if (error) throw error;
 
     const context = (matches || [])
       .map((m) => `[${m.document_name}]\n${m.chunk_text}`)
@@ -78,20 +70,6 @@ export default async function handler(req, res) {
     return res.status(200).json({
       answer,
       sources: (matches || []).map((m) => m.document_name),
-      debug: {
-        rpcError: error,
-        matchCount: matches ? matches.length : null,
-        embeddingLength: queryEmbedding.length,
-        supabaseUrlUsed: process.env.SUPABASE_URL,
-        chunkCount,
-        countError,
-        listedChunks,
-        listError,
-        paramCheck,
-        paramError,
-        distanceCheck,
-        distanceError,
-      },
     });
   } catch (err) {
     return res.status(500).json({ error: err.message });
