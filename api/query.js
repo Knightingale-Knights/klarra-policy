@@ -61,6 +61,10 @@ export default async function handler(req, res) {
     });
     if (error) throw error;
 
+    const { data: orderLimitCheck, error: orderLimitError } = await supabase.rpc('debug_order_limit', {
+      query_embedding: `[${queryEmbedding.join(',')}]`,
+    });
+
     const context = (matches || [])
       .map((m) => `[${m.document_name}]\n${m.chunk_text}`)
       .join('\n\n---\n\n');
@@ -70,6 +74,7 @@ export default async function handler(req, res) {
     return res.status(200).json({
       answer,
       sources: (matches || []).map((m) => m.document_name),
+      debug: { orderLimitCheck, orderLimitError },
     });
   } catch (err) {
     return res.status(500).json({ error: err.message });
