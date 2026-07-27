@@ -62,6 +62,9 @@ export default async function handler(req, res) {
 
     const { data: chunkCount, error: countError } = await supabase.rpc('debug_chunk_count');
     const { data: listedChunks, error: listError } = await supabase.rpc('debug_list_chunks');
+    const { data: paramCheck, error: paramError } = await supabase.rpc('debug_embedding_param', {
+      query_embedding: `[${queryEmbedding.join(',')}]`,
+    });
 
     const context = (matches || [])
       .map((m) => `[${m.document_name}]\n${m.chunk_text}`)
@@ -81,6 +84,8 @@ export default async function handler(req, res) {
         countError,
         listedChunks,
         listError,
+        paramCheck,
+        paramError,
       },
     });
   } catch (err) {
