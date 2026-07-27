@@ -56,7 +56,7 @@ export default async function handler(req, res) {
     const queryEmbedding = await getEmbedding(question);
 
     const { data: matches, error } = await supabase.rpc('match_policy_chunks', {
-      query_embedding: queryEmbedding,
+      query_embedding: `[${queryEmbedding.join(',')}]`,
       match_count: 5,
     });
 
