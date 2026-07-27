@@ -65,6 +65,9 @@ export default async function handler(req, res) {
     const { data: paramCheck, error: paramError } = await supabase.rpc('debug_embedding_param', {
       query_embedding: `[${queryEmbedding.join(',')}]`,
     });
+    const { data: distanceCheck, error: distanceError } = await supabase.rpc('debug_distance_check', {
+      query_embedding: `[${queryEmbedding.join(',')}]`,
+    });
 
     const context = (matches || [])
       .map((m) => `[${m.document_name}]\n${m.chunk_text}`)
@@ -86,6 +89,8 @@ export default async function handler(req, res) {
         listError,
         paramCheck,
         paramError,
+        distanceCheck,
+        distanceError,
       },
     });
   } catch (err) {
