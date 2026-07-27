@@ -59,7 +59,6 @@ export default async function handler(req, res) {
       query_embedding: queryEmbedding,
       match_count: 5,
     });
-    if (error) throw error;
 
     const context = (matches || [])
       .map((m) => `[${m.document_name}]\n${m.chunk_text}`)
@@ -70,6 +69,7 @@ export default async function handler(req, res) {
     return res.status(200).json({
       answer,
       sources: (matches || []).map((m) => m.document_name),
+      debug: { rpcError: error, matchCount: matches ? matches.length : null, embeddingLength: queryEmbedding.length },
     });
   } catch (err) {
     return res.status(500).json({ error: err.message });
