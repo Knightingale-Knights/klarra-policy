@@ -69,7 +69,12 @@ export default async function handler(req, res) {
     return res.status(200).json({
       answer,
       sources: (matches || []).map((m) => m.document_name),
-      debug: { rpcError: error, matchCount: matches ? matches.length : null, embeddingLength: queryEmbedding.length },
+      debug: {
+        rpcError: error,
+        matchCount: matches ? matches.length : null,
+        embeddingLength: queryEmbedding.length,
+        supabaseUrlUsed: process.env.SUPABASE_URL,
+      },
     });
   } catch (err) {
     return res.status(500).json({ error: err.message });
