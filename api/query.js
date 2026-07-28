@@ -33,7 +33,7 @@ async function askClaude(question, context) {
     body: JSON.stringify({
       model: 'claude-sonnet-4-6',
       max_tokens: 1000,
-      system: `You are a policy assistant for Knightingale staff. Answer the question using only the policy excerpts below. If the excerpts don't contain the answer, say you don't know and suggest checking with management. Be concise.\n\nPolicy excerpts:\n${context}`,
+      system: `You are a policy assistant for Knightingale staff. Answer the question using only the policy excerpts below. If the excerpts don't contain the answer, say you don't know and suggest checking with management. Be concise. Respond in plain text only — no markdown, no asterisks for bold or emphasis, no headers.\n\nPolicy excerpts:\n${context}`,
       messages: [{ role: 'user', content: question }],
     }),
   });
